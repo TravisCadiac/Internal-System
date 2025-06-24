@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mphale Projects Internal System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f4f8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #001f3f;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 960px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      padding: 10px;
+      margin: 8px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+    th {
+      background: #f5f5f5;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mphale Projects Internal System</h1>
+  </header>
+  <div class="container">
+    <div id="login">
+      <h2>Login</h2>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="login()">Login</button>
+      <p id="loginError" style="color:red;"></p>
+    </div>
+    <div id="dashboard" class="hidden">
+      <h2>Welcome, <span id="roleTitle"></span></h2>
+      <div id="modules"></div>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    const users = {
+      director: { password: "Director123", role: "Director" },
+      finance: { password: "Finance123", role: "Finance Manager" },
+      hr: { password: "HR123", role: "HR Officer" },
+      pm: { password: "PM123", role: "Project Manager" },
+      tender: { password: "Tender123", role: "Tender Officer" },
+      bda: { password: "BDA123", role: "Business Dev Assistant" }
+    };
+
+    function login() {
+      const user = document.getElementById('username').value.trim().toLowerCase();
+      const pass = document.getElementById('password').value.trim();
+      const loginError = document.getElementById('loginError');
+      if (users[user] && users[user].password === pass) {
+        document.getElementById('login').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        document.getElementById('roleTitle').innerText = users[user].role;
+        loadModules(users[user].role);
+      } else {
+        loginError.innerText = "Invalid login details";
+      }
+    }
+
+    function logout() {
+      document.getElementById('dashboard').classList.add('hidden');
+      document.getElementById('login').classList.remove('hidden');
+      document.getElementById('modules').innerHTML = "";
+      document.getElementById('username').value = "";
+      document.getElementById('password').value = "";
+      document.getElementById('loginError').innerText = "";
+    }
+
+    function loadModules(role) {
+      const modules = document.getElementById('modules');
+      modules.innerHTML = "";
+
+      if (role === "Director" || role === "HR Officer") {
+        modules.innerHTML += "<h3>HR Module</h3><p>Add employees, warnings, and manage leave.</p>";
+      }
+
+      if (["Director", "Project Manager", "Finance Manager", "Tender Officer", "Business Dev Assistant"].includes(role)) {
+        modules.innerHTML += "<h3>Project Module</h3><p>Manage projects, track progress.</p>";
+      }
+
+      if (["Director", "Project Manager", "Tender Officer", "Business Dev Assistant"].includes(role)) {
+        modules.innerHTML += "<h3>Task Module</h3><p>Assign or view tasks based on role.</p>";
+      }
+
+      if (role === "Director" || role === "Finance Manager") {
+        modules.innerHTML += "<h3>Finance Module</h3><p>View and manage finances.</p>";
+      }
+    }
+  </script>
+</body>
+</html>
